@@ -70,19 +70,19 @@ new class extends Component {
     <div class="flex justify-between">
         <div class="space-y-4">
 
-        <flux:field class="flex items-center">
+            <flux:field class="flex items-center">
 
-            <flux:input wire:model.live.debounce.300ms="search" placeholder="Search orders" clearable size="sm">
-                <x-slot name="iconLeading">
+                <flux:input wire:model.live.debounce.300ms="search" placeholder="Search orders" clearable size="sm">
+                    <x-slot name="iconLeading">
 
-                <flux:label>
+                        <flux:label>
 
-                    <flux:icon.magnifying-glass class="size-5"/>
-                </flux:label>
-                </x-slot>
+                            <flux:icon.magnifying-glass class="size-5"/>
+                        </flux:label>
+                    </x-slot>
 
-            </flux:input>
-        </flux:field>
+                </flux:input>
+            </flux:field>
             @if($tag)
                 {{--        <flux:badge as="button" wire:click="set_tag(null)"><flux:badge.close/>{{$tag}}</flux:badge>--}}
                 <flux:badge wire:click="set_tag(null)" class="mb-2 cursor-pointer hover:bg-zinc-600"
@@ -93,7 +93,9 @@ new class extends Component {
             @endif
         </div>
 
-        <flux:button variant="primary" icon="plus">Add product</flux:button>
+        <flux:modal.trigger name="add-product" shortcut="ctrl.p">
+            <flux:button variant="primary" icon="plus">Add product</flux:button>
+        </flux:modal.trigger>
 
     </div>
 
@@ -119,7 +121,7 @@ new class extends Component {
 
         </flux:table.columns>
 
-        <flux:table.rows >
+        <flux:table.rows>
             @foreach ($this->products as $index => $product)
                 <flux:table.row class='hover:bg-zinc-700' :key="$product->id">
                     <flux:table.cell align="center" class="border-r w-12 font-medium">
@@ -149,11 +151,12 @@ new class extends Component {
                     </flux:table.cell>
                     <flux:table.cell align="center" class="flex gap-2 justify-center">
                         <flux:button.group>
-                            <flux:modal.trigger :name='"edit-product-$product->id"' >
+                            <flux:modal.trigger :name='"edit-product-$product->id"'>
                                 <flux:button class="cursor-pointer" size="xs">Edit</flux:button>
                             </flux:modal.trigger>
                             <flux:modal.trigger :name='"delete-product-$product->id"'>
-                                <flux:button variant="danger" class="cursor-pointer" color="rose" size="xs">Delete</flux:button>
+                                <flux:button variant="danger" class="cursor-pointer" color="rose" size="xs">Delete
+                                </flux:button>
                             </flux:modal.trigger>
                         </flux:button.group>
 
@@ -169,7 +172,7 @@ new class extends Component {
             <div class="space-y-6">
                 <flux:heading size="lg">Update product</flux:heading>
                 <flux:subheading>Make changes to the product details.</flux:subheading>
-                <flux:input label="Name" :placeholder="$product->name" />
+                <flux:input label="Name" :placeholder="$product->name"/>
                 <flux:textarea label="Description" type="type" :placeholder="$product->description"/>
             </div>
         </flux:modal>
@@ -184,7 +187,7 @@ new class extends Component {
                     </flux:text>
                 </div>
                 <div class="flex gap-2">
-                    <flux:spacer />
+                    <flux:spacer/>
                     <flux:modal.close>
                         <flux:button variant="ghost">Cancel</flux:button>
                     </flux:modal.close>
@@ -192,5 +195,124 @@ new class extends Component {
                 </div>
             </div>
         </flux:modal>
+
     @endforeach
+
+    <flux:modal class="min-w-2xl" name="add-product">
+        <flux:heading size="xl">Add product</flux:heading>
+        <flux:text>
+            Add a new product by filling in the details below. You can edit this information later.
+        </flux:text>
+        <flux:fieldset>
+            <div class="space-y-6 mt-4">
+
+                <div class="grid grid-cols-2 gap-x-4 gap-y-6">
+                    <flux:input label="Name" placeholder="product name"/>
+                    <flux:field>
+                        <flux:label>Price</flux:label>
+                        <flux:input.group>
+                            <flux:dropdown>
+                                <flux:button icon:trailing="chevron-down">USD</flux:button>
+                                <flux:menu>
+                                    <flux:modal.trigger name="add-currency">
+                                        <flux:menu.item icon="plus">New currency</flux:menu.item>
+                                    </flux:modal.trigger>
+                                    <flux:menu.separator/>
+                                    <flux:menu.radio.group keep-open>
+                                        <flux:menu.radio>USD</flux:menu.radio>
+                                        <flux:menu.radio>IQD</flux:menu.radio>
+                                    </flux:menu.radio.group>
+                                </flux:menu>
+                            </flux:dropdown>
+
+                            <flux:input placeholder="99.99"/>
+
+                        </flux:input.group>
+                    </flux:field>
+
+                </div>
+
+                <flux:textarea label="Description" placeholder="product description" badge="optional"/>
+
+                <flux:field>
+                    <flux:label badge="optional">Category</flux:label>
+                    <flux:dropdown>
+
+                        <flux:button class="w-1/2 mx-auto" icon:trailing="chevron-down">Select category</flux:button>
+
+                        <flux:menu>
+                            <flux:modal.trigger name="add-category">
+                                <flux:menu.item icon="plus">New category</flux:menu.item>
+                            </flux:modal.trigger>
+                            <flux:menu.separator/>
+                            <flux:menu.radio.group keep-open>
+                                <flux:menu.radio>
+
+                                        Category 1
+
+                                </flux:menu.radio>
+                                <flux:menu.radio>
+
+                                        Category 2
+
+                                </flux:menu.radio>
+                                <flux:menu.radio>
+{{--                                    <div class="flex items-center justify-between w-full">--}}
+                                        Category 3
+{{--                                        <span>Category 3</span>--}}
+
+{{--                                        <flux:button--}}
+{{--                                            variant="ghost"--}}
+{{--                                            size="xs"--}}
+{{--                                            icon="pencil-square"--}}
+{{--                                            x-on:click.stop--}}
+{{--                                            aria-label="Edit category"--}}
+{{--                                        />--}}
+{{--                                    </div>--}}
+                                </flux:menu.radio>
+                                <flux:menu.radio>
+
+                                        Category 4
+
+                                </flux:menu.radio>
+                                <flux:menu.radio>
+
+                                        Category 5
+
+                                </flux:menu.radio>
+                            </flux:menu.radio.group>
+                        </flux:menu>
+                    </flux:dropdown>
+
+                </flux:field>
+
+            </div>
+        </flux:fieldset>
+
+        <div class="flex gap-2">
+            <flux:spacer/>
+
+            <flux:modal.close>
+                <flux:button variant="ghost">Cancel</flux:button>
+            </flux:modal.close>
+            <flux:button type="submit" variant="primary">Add product</flux:button>
+
+        </div>
+    </flux:modal>
+
+    <flux:modal name="add-currency" flyout variant="floating" position="bottom">
+
+        <flux:heading size="xl">
+            Add currency
+        </flux:heading>
+
+    </flux:modal>
+    <flux:modal name="add-category" flyout variant="floating" position="bottom">
+
+        <flux:heading size="xl">
+            Add category
+        </flux:heading>
+
+
+    </flux:modal>
 </section>
